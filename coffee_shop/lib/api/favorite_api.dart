@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class FavoriteApi {
-  final String baseUrl = "http://192.168.200.140/coffee_shop_api/favorite_api";
+  final String baseUrl = "http://your system ip/coffee_shop_api/favorite_api";
 
   // دریافت همه علاقه‌مندی‌ها برای یک کاربر خاص
   Future<List<dynamic>> getAllFavorites(String userId) async {

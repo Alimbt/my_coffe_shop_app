@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class DrinksApi {
-  final String baseUrl = "http://192.168.200.140/coffee_shop_api/drink_api";
+  final String baseUrl = "http://your system ip/coffee_shop_api/drink_api";
 
   // دریافت همه محصولات
   Future<List<dynamic>> getAllDrinks() async {
