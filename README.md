@@ -9,15 +9,16 @@ this app code by flutter , dart & php
 	admin page and controls will be added soon...
 	
 run this app u need:
+
 	xampp version:    3.3.0(we need apache & mysql)
-	Dart SDK version: 3.5.3
-	Flutter version:  3.24.3
-	java version:     17.0.13
-	gradle version:   8.10.2
-	Kotlin:           1.9.24
-	Groovy:           3.0.22
-	os :              windows 10
-	
+	1-Dart SDK version: 3.5.3
+	2-Flutter version:  3.24.3
+	3-java version:     17.0.13
+	4-gradle version:   8.10.2
+	5-Kotlin:           1.9.24
+	6-Groovy:           3.0.22
+	7-os :              windows 10/11
+ 
 	this code is tested on galaxy note 20 ultra android 13 one ui 5.1
 	not tested on any vm
 	vscode : any version (newest is better)
