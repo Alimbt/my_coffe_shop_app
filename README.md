@@ -24,9 +24,18 @@ run this app u need:
 	vscode : any version (newest is better)
 	vscode extentions: dart , flutter , php , gradle
 	
-📱
-	dm me for any suggestion on :
-☎️
+📱dm me for any suggestion on :
+	
+ 	☎️
 	telegram: alimbt
 	instagram: azerila_gnarfa
+
+ for build app:
+
+	 put coffee_shop_api folder in  C:\xampp\htdocs
+ 	import db file in xampp phpmyadmin
+
+
+
+ 
 
