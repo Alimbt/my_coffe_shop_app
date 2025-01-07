@@ -5,6 +5,7 @@ import 'package:coffee_shop/user_pages/cart_page.dart';
 import 'package:coffee_shop/user_pages/food_page.dart';
 import 'package:coffee_shop/user_pages/drink_page.dart';
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
@@ -16,20 +17,26 @@ class FavoritePage extends StatefulWidget {
 class _FavoritePageState extends State<FavoritePage> {
   final FavoriteApi _favoriteApi = FavoriteApi();
   List<dynamic> favoriteItems = [];
+  bool isLoading = true;
 
+  @override
   void initState() {
     super.initState();
     fetchFavorites();
   }
 
   Future<void> fetchFavorites() async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       final items = await _favoriteApi.getAllFavorites('1');
       setState(() {
         favoriteItems = items;
+        isLoading = false;
       });
     } catch (e) {
-      print('Failed to load favorites: $e');
+      const RiveAnimation.asset('assets/animations/cup_walk.riv');
     }
   }
 
@@ -44,38 +51,42 @@ class _FavoritePageState extends State<FavoritePage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: ListView.builder(
-        itemCount: favoriteItems.length,
-        itemBuilder: (context, index) {
-          final favorite = favoriteItems[index];
-          String favoriteItem = favorite['name'];
-          int coffeeIndex = favorite(favoriteItem);
-          int foodIndex = favorite(favoriteItem);
+      body: isLoading
+          ? const Center(
+              child: RiveAnimation.asset('assets/animations/cup_walk.riv'))
+          : ListView.builder(
+              itemCount: favoriteItems.length,
+              itemBuilder: (context, index) {
+                final favorite = favoriteItems[index];
+                String favoriteItem = favorite['name'];
+                int coffeeIndex = favorite(favoriteItem);
+                int foodIndex = favorite(favoriteItem);
 
-          String imageUrl;
-          if (coffeeIndex != -1) {
-            // اگر آیتم از لیست قهوه‌ها باشد
-            imageUrl = favorite[coffeeIndex];
-          } else if (foodIndex != -1) {
-            // اگر آیتم از لیست غذاها باشد
-            imageUrl = favorite[foodIndex];
-          } else {
-            imageUrl = 'https://via.placeholder.com/150';
-          }
+                String imageUrl;
+                if (coffeeIndex != -1) {
+                  // اگر آیتم از لیست قهوه‌ها باشد
+                  imageUrl = favorite[coffeeIndex];
+                } else if (foodIndex != -1) {
+                  // اگر آیتم از لیست غذاها باشد
+                  imageUrl = favorite[foodIndex];
+                } else {
+                  imageUrl = 'https://via.placeholder.com/150';
+                }
 
-          return Mysquare(
-            imageUrl: imageUrl,
-            name: favoriteItem,
-            iconFavorite: () {},
-            iconAdd: () {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                duration: const Duration(seconds: 1),
-                content: Text('$favoriteItem added to your favorite cart'),
-              ));
-            },
-          );
-        },
-      ),
+                return Mysquare(
+                  imageUrl: imageUrl,
+                  name: favoriteItem,
+                  iconFavorite: () {},
+                  iconAdd: () {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      duration: const Duration(seconds: 1),
+                      content:
+                          Text('$favoriteItem added to your favorite cart'),
+                    ));
+                  },
+                );
+              },
+            ),
       bottomNavigationBar: BottomNavigation(
         onIconPressed: (index) {
           switch (index) {

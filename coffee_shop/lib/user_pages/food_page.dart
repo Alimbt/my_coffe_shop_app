@@ -7,6 +7,7 @@ import 'package:coffee_shop/user_pages/cart_page.dart';
 import 'package:coffee_shop/user_pages/favorite_page.dart';
 import 'package:coffee_shop/user_pages/drink_page.dart';
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 
 class FoodPage extends StatefulWidget {
   const FoodPage({super.key});
@@ -18,6 +19,7 @@ class FoodPage extends StatefulWidget {
 class _FoodPageState extends State<FoodPage> {
   final CartApi cartApi = CartApi();
   List<dynamic> foods = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -26,11 +28,15 @@ class _FoodPageState extends State<FoodPage> {
   }
 
   Future<void> fetchFoods() async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       final foodsApi = FoodsApi();
       final fetchedFoods = await foodsApi.getAllFoods();
       setState(() {
         foods = fetchedFoods;
+        isLoading = false;
       });
     } catch (e) {
       print('Failed to load foods: $e');
@@ -45,7 +51,7 @@ class _FoodPageState extends State<FoodPage> {
         duration: const Duration(seconds: 1),
       ));
     } catch (e) {
-      print('Failed to add to cart: $e');
+      const RiveAnimation.asset('assets/animations/cup_walk.riv');
     }
   }
 
@@ -60,32 +66,35 @@ class _FoodPageState extends State<FoodPage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: ListView.builder(
-        itemCount: foods.length,
-        itemBuilder: (context, index) {
-          final food = foods[index];
-          return Mysquare(
-            imageUrl: food['image_url'],
-            name: food['name'],
-            iconFavorite: () {
-              FavoritesManager.addFavoriteFood(food['name']);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('${food['name']} added to favorites'),
-                duration: const Duration(seconds: 1),
-              ));
-            },
-            iconAdd: () {
-              addToCart(food['name'], food['image_url']);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('${food['name']} added to Cart'),
-                  duration: const Duration(seconds: 1),
-                ),
-              );
-            },
-          );
-        },
-      ),
+      body: isLoading
+          ? const Center(
+              child: RiveAnimation.asset('assets/animations/cup_walk.riv'))
+          : ListView.builder(
+              itemCount: foods.length,
+              itemBuilder: (context, index) {
+                final food = foods[index];
+                return Mysquare(
+                  imageUrl: food['image_url'],
+                  name: food['name'],
+                  iconFavorite: () {
+                    FavoritesManager.addFavoriteFood(food['name']);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('${food['name']} added to favorites'),
+                      duration: const Duration(seconds: 1),
+                    ));
+                  },
+                  iconAdd: () {
+                    addToCart(food['name'], food['image_url']);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('${food['name']} added to Cart'),
+                        duration: const Duration(seconds: 1),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
       bottomNavigationBar: BottomNavigation(
         onIconPressed: (index) {
           switch (index) {

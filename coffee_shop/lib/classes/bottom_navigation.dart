@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 class BottomNavigation extends StatelessWidget {
   final Function(int) onIconPressed;
 
-  const BottomNavigation({Key? key, required this.onIconPressed})
-      : super(key: key);
+  const BottomNavigation({super.key, required this.onIconPressed});
 
   @override
   Widget build(BuildContext context) {

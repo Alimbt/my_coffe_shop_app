@@ -9,6 +9,7 @@ import 'package:coffee_shop/user_pages/cart_page.dart';
 import 'package:coffee_shop/user_pages/favorite_page.dart';
 import 'package:coffee_shop/user_pages/food_page.dart';
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 
 // import 'package:coffe_shop/dbcontext.dart';
 class DrinkPage extends StatefulWidget {
@@ -21,6 +22,7 @@ class DrinkPage extends StatefulWidget {
 class _DrinkPageState extends State<DrinkPage> {
   final DrinksApi drinksApi = DrinksApi();
   List<dynamic> drinks = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -29,10 +31,14 @@ class _DrinkPageState extends State<DrinkPage> {
   }
 
   Future<void> fetchDrinks() async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       final fetchedDrinks = await drinksApi.getAllDrinks();
       setState(() {
         drinks = fetchedDrinks;
+        isLoading = false;
       });
     } catch (e) {
       print('Failed to load drinks: $e');
@@ -48,7 +54,7 @@ class _DrinkPageState extends State<DrinkPage> {
         duration: const Duration(seconds: 1),
       ));
     } catch (e) {
-      print('Failed to add to cart: $e');
+      const RiveAnimation.asset('assets/animations/cup_walk.riv');
     }
   }
 
@@ -64,40 +70,43 @@ class _DrinkPageState extends State<DrinkPage> {
         ),
       ),
       //list view
-      body: ListView.builder(
-        itemCount: drinks.length,
-        itemBuilder: (context, index) {
-          final drink = drinks[index];
-          return Mysquare(
-            imageUrl: drink['image_url'], // استفاده از لیست تصاویر
-            name: drink['name'], // استفاده از لیست نام ها
+      body: isLoading
+          ? const Center(
+              child: RiveAnimation.asset('assets/animations/cup_walk.riv'))
+          : ListView.builder(
+              itemCount: drinks.length,
+              itemBuilder: (context, index) {
+                final drink = drinks[index];
+                return Mysquare(
+                  imageUrl: drink['image_url'], // استفاده از لیست تصاویر
+                  name: drink['name'], // استفاده از لیست نام ها
 
-            iconFavorite: () {
-              FavoritesManager.addFavoriteCoffee(drink['name']);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('${drink['name']} added to favorites'),
-                duration: const Duration(seconds: 1),
-              ));
-              const Padding(
-                padding: EdgeInsets.only(left: 8.0),
-                child: Icon(
-                  Icons.coffee,
-                  size: 30,
-                  color: Color.fromARGB(255, 219, 200, 22),
-                ),
-              );
-            },
+                  iconFavorite: () {
+                    FavoritesManager.addFavoriteCoffee(drink['name']);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('${drink['name']} added to favorites'),
+                      duration: const Duration(seconds: 1),
+                    ));
+                    const Padding(
+                      padding: EdgeInsets.only(left: 8.0),
+                      child: Icon(
+                        Icons.coffee,
+                        size: 30,
+                        color: Color.fromARGB(255, 219, 200, 22),
+                      ),
+                    );
+                  },
 
-            iconAdd: () {
-              addToCart(drink['name'], drink['image_url']);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('${drink['name']} added to Cart'),
-                duration: const Duration(seconds: 1),
-              ));
-            },
-          );
-        },
-      ),
+                  iconAdd: () {
+                    addToCart(drink['name'], drink['image_url']);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('${drink['name']} added to Cart'),
+                      duration: const Duration(seconds: 1),
+                    ));
+                  },
+                );
+              },
+            ),
       bottomNavigationBar: BottomNavigation(
         onIconPressed: (index) {
           // اجرای دستور مربوط به هر دکمه
